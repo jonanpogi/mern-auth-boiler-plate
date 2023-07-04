@@ -1,0 +1,12 @@
+services:
+  mongo:
+    ports:
+      - 27017:27017
+    image: mongo:5.0.5
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - './temp/rids-dev/db:/data/db'
+networks:
+  rids-dev:

@@ -1,6 +1,7 @@
 import {NextFunction, Request} from 'express';
+import {SessionData} from 'express-session';
 import jwt from 'jsonwebtoken';
-import {Users} from '../models';
+import {store} from '../models';
 import {IUsers} from '../models/Users';
 import {CustomResponse} from '../types';
 import constants from './constants';
@@ -11,6 +12,11 @@ const checkAuth = async (
   next: NextFunction,
 ): Promise<void | CustomResponse> => {
   try {
+    // Validate session id
+    if (!req.sessionID) {
+      throw new Error('Unauthenticated');
+    }
+
     // Check if the JWT token exists in the request header
     const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -26,41 +32,18 @@ const checkAuth = async (
     }
 
     // Retrieve the user session from the database
-    const user = await Users.aggregate([
-      {
-        $match:
-          /**
-           * query: The query in MQL.
-           */
-          {googleId: decodedToken.id},
-      },
-      {
-        $lookup:
-          /**
-           * from: The target collection.
-           * localField: The local join field.
-           * foreignField: The target join field.
-           * as: The name for the results.
-           * pipeline: Optional pipeline to run on the foreign collection.
-           * let: Optional variables to use in the pipeline field stages.
-           */
-          {
-            from: 'sessions',
-            localField: 'googleId',
-            foreignField: 'session.passport.user.googleId',
-            as: 'sessions',
-          },
-      },
-    ]);
+    const session = await new Promise((resolve, reject) => {
+      store.get(req.sessionID, (err, session) => {
+        if (err) reject(new Error('Error on fetching sessionn'));
+        else if (!session) reject(new Error('User session does not exist'));
+        resolve(session);
+      });
+    });
 
-    console.log('User session', user);
-
-    if (user[0].sessions.length === 0) {
-      throw new Error('The user session does not exist');
-    }
+    console.log('User session', session);
 
     // Verify expiry
-    if (user[0].sessions[0].expires === new Date()) {
+    if ((session as SessionData).cookie.expires === new Date()) {
       throw new Error('The user session already expires');
     }
 

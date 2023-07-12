@@ -8,6 +8,8 @@ const constants = {
   BASE_URL: process.env.BASE_URL as string,
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY as string,
   SESSION_SECRET_KEY: process.env.SESSION_SECRET_KEY as string,
+  SESSION_COOKIE_NAME: process.env.SESSION_COOKIE_NAME as string,
+  SESSION_EXPIRY_MAX_AGE: process.env.SESSION_EXPIRY_MAX_AGE as string,
   MONGODB_URL: process.env.MONGODB_URL as string,
   MONGODB_DB: process.env.MONGODB_DB as string,
   MONGODB_AUTO_INDEX: process.env.MONGODB_AUTO_INDEX as unknown as boolean,

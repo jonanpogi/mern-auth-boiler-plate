@@ -25,10 +25,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(
   session({
+    name: constants.SESSION_COOKIE_NAME,
     secret: constants.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     store: store,
+    cookie: {
+      maxAge: parseInt(constants.SESSION_EXPIRY_MAX_AGE),
+    },
   }),
 );
 app.use(passport.initialize());

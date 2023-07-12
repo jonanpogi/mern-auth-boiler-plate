@@ -29,6 +29,8 @@ router.get('/logout', (req: Request, res: CustomResponse) => {
           .json({success: false, data: {message: 'Error on removing session'}});
       }
 
+      res.clearCookie(constants.SESSION_COOKIE_NAME);
+
       return res
         .status(200)
         .json({success: true, data: {message: 'Logout success'}});
@@ -67,7 +69,7 @@ router.get('/google/success', (req: Request, res: CustomResponse) => {
   );
 
   // generate jwt and return to user
-  const token = jwt.sign(user, constants.JWT_SECRET_KEY, {
+  const token = jwt.sign({id: user.googleId}, constants.JWT_SECRET_KEY, {
     expiresIn: constants.JWT_EXPIRES_IN,
   });
   res.status(200).json({success: true, data: {token}});

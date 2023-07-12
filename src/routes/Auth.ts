@@ -69,9 +69,7 @@ router.get('/google/success', (req: Request, res: CustomResponse) => {
   );
 
   // generate jwt and return to user
-  const token = jwt.sign({id: user.googleId}, constants.JWT_SECRET_KEY, {
-    expiresIn: constants.JWT_EXPIRES_IN,
-  });
+  const token = jwt.sign({id: user.googleId}, constants.JWT_SECRET_KEY);
   res.status(200).json({success: true, data: {token}});
 });
 

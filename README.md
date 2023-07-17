@@ -2,7 +2,7 @@
 A simple Node.js project that have the functionality to google signin, logout, and have the capability to check protected api calls.
 
 # STEPS
-1. `docker copose -d up`
+1. `docker compose -d up`
 2. `touch .env`
 3. `nano .env`
 4. paste the ff.
